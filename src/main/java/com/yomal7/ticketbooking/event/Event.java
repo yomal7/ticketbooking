@@ -41,4 +41,8 @@ public class Event {
     public String getName() { return name; }
     public OffsetDateTime getStartsAt() { return startsAt; }
     public EventStatus getStatus() { return status; }
+
+    public void publish(){
+        this.status = EventStatus.ON_SALE;
+    }
 }

@@ -63,6 +63,17 @@ public class EventService {
         return rows.stream().map(EventSeatResponse::from).toList();
     }
 
+    @Transactional
+    public EventResponse publish(Long id){
+        Event event = findEvent(id);
+        if (event.getStatus() != EventStatus.DRAFT) {
+            throw new ConflictException("Event " + id + " is " + event.getStatus()
+                    + "; only DRAFT events can be published");
+        }
+        event.publish();
+        return EventResponse.from(event);
+    }
+
     private Event findEvent(Long id) {
         return eventRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Event " + id + " not found"));

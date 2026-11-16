@@ -42,4 +42,9 @@ public class EventController {
                                          @RequestParam(required = false) EventSeatStatus status) {
         return eventService.seats(id, status);
     }
+
+    @PostMapping("/{id}/publish")
+    public EventResponse publish(@PathVariable Long id){
+        return eventService.publish(id);
+    }
 }
