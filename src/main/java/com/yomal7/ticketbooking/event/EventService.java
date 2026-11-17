@@ -57,9 +57,16 @@ public class EventService {
 
     public List<EventSeatResponse> seats(Long eventId, EventSeatStatus status) {
         findEvent(eventId);
-        List<EventSeat> rows = (status == null)
-                ? eventSeatRepository.findByEventId(eventId)
-                : eventSeatRepository.findByEventIdAndStatus(eventId, status);
+
+        List<EventSeat> rows;
+        if (status == null) {
+            rows = eventSeatRepository.findByEventId(eventId);
+        } else if (status == EventSeatStatus.AVAILABLE) {
+            rows = eventSeatRepository.findAvailableByEventId(eventId);
+        } else {
+            rows = eventSeatRepository.findByEventIdAndStatus(eventId, status);
+        }
+
         return rows.stream().map(EventSeatResponse::from).toList();
     }
 
