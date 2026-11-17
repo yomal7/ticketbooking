@@ -13,6 +13,8 @@ import com.yomal7.ticketbooking.event.EventStatus;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
+
+import com.yomal7.ticketbooking.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +26,22 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final EventRepository eventRepository;
     private final EventSeatRepository eventSeatRepository;
+    private final UserRepository userRepository;
 
     public BookingService(BookingRepository bookingRepository,
                           EventRepository eventRepository,
-                          EventSeatRepository eventSeatRepository) {
+                          EventSeatRepository eventSeatRepository, UserRepository userRepository) {
         this.bookingRepository = bookingRepository;
         this.eventRepository = eventRepository;
         this.eventSeatRepository = eventSeatRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
     public BookingResponse create(Long eventId, Long userId, CreateBookingRequest request) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User " + userId + " not found");
+        }
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event " + eventId + " not found"));
         if (event.getStatus() != EventStatus.ON_SALE) {

@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
 
-    List<EventSeat> findByEventId(Long eventId);
+    List<EventSeat> findByEventIdOrderByIdAsc(Long eventId);
 
-    List<EventSeat> findByEventIdAndStatus(Long eventId, EventSeatStatus status);
+    List<EventSeat> findByEventIdAndStatusOrderByIdAsc(Long eventId, EventSeatStatus status);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(value = """
@@ -46,6 +46,7 @@ public interface EventSeatRepository extends JpaRepository<EventSeat, Long> {
             SELECT * FROM event_seats
             WHERE event_id = :eventId
               AND (status = 'AVAILABLE' OR (status = 'HELD' AND hold_expires_at < now()))
+              ORDER BY id ASC
             """, nativeQuery = true)
     List<EventSeat> findAvailableByEventId(@Param("eventId") Long eventId);
 

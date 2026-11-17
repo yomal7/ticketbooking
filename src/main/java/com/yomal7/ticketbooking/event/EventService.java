@@ -60,11 +60,11 @@ public class EventService {
 
         List<EventSeat> rows;
         if (status == null) {
-            rows = eventSeatRepository.findByEventId(eventId);
+            rows = eventSeatRepository.findByEventIdOrderByIdAsc(eventId);
         } else if (status == EventSeatStatus.AVAILABLE) {
             rows = eventSeatRepository.findAvailableByEventId(eventId);
         } else {
-            rows = eventSeatRepository.findByEventIdAndStatus(eventId, status);
+            rows = eventSeatRepository.findByEventIdAndStatusOrderByIdAsc(eventId, status);
         }
 
         return rows.stream().map(EventSeatResponse::from).toList();
